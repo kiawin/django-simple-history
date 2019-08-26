@@ -379,16 +379,8 @@ class HistoricalRecords(object):
                     model._meta.get_field(field).attname
                     for field in self._history_excluded_fields
                 ]
-                try:
-                    values = (
-                        model.objects.filter(pk=getattr(self, model._meta.pk.attname))
-                        .values(*excluded_attnames)
-                        .get()
-                    )
-                except ObjectDoesNotExist:
-                    pass
-                else:
-                    attrs.update(values)
+                for excluded_attname in excluded_attnames:
+                    attrs.pop(excluded_attname, None)
             return model(**attrs)
 
         def get_next_record(self):
